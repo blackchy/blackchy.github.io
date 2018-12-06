@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[博客-Jekyll迁移到Hexo]]></title>
+    <url>%2F2018%2F12%2F04%2F2018-12-04-Jekyll-To-Hexo%2F</url>
+    <content type="text"><![CDATA[发现了比Jekyll用起来更舒服的Hexo，看了一下Hexo的文档过后马上就把它应用到了博客中。 详细流程(Windows)如下，具体可参考Hexo文档。 环境准备 安装Git、安装Node.js Git Node.js 安装Hexo 1$ npm install -g hexo-cli 建站123$ hexo init blackchy.github.io$ cd blackchy.github.io$ npm install 配置打开根目录下的_config.yml文件，主要配置以下内容。12345678# Sitetitle: Black Chy&apos;s Blogsubtitle: 香蕉是最受欢迎的水果。description: Just a dog.keywords: Android, Developer, Dogauthor: Black Chylanguage: zh-CNtimezone: Asia/Chongqing 主题项目默认是landscape主题，这里修改为hexo-theme-next。首先下载next主题到项目中。1$ git clone https://github.com/theme-next/hexo-theme-next themes/next 然后把根目录下_config.yml文件中的theme改为next。next主题需要手动生成tags和categories，并修改index文件中的内容:12$ hexo new page tags$ hexo new page categories 12345---title: 所有标签type: tagsdate: 2018-12-04 00:00:00--- 12345---title: 所有分类type: categoriesdate: 2018-12-04 00:00:00--- 最后，在下载好的next主题中也有一个_config.yml文件（路径：theme-&gt;next-&gt;_config.yml），打开进行next主题相关配置。例如： next内部又有4个不同的设计风格，这里使用的是Gemini 1scheme: Gemini 设置头像 123456789avatar: #头像url url: /uploads/avatar.png #圆头像 rounded: true #透明度 0-1 opacity: 1 #旋转动画 rotated: true 设置菜单列表，仅打开 首页、关于、归档，其他全部关闭。 123456789menu: home: / || home about: /about/ || user #tags: /tags/ || tags #categories: /categories/ || th archives: /archives/ || archive #schedule: /schedule/ || calendar #sitemap: /sitemap.xml || sitemap #commonweal: /404/ || heartbeat 打开不蒜子网页计数器 12345678busuanzi_count: enable: true total_visitors: true total_visitors_icon: user total_views: true total_views_icon: eye post_views: true post_views_icon: eye 安装其他js 1234567891011fastclick: true$ cd themes/next$ git clone https://github.com/theme-next/theme-next-fastclick source/lib/fastclicklazyload: true$ cd themes/next$ git clone https://github.com/theme-next/theme-next-jquery-lazyload source/lib/jquery_lazyloadpace: true$ cd themes/next$ git clone https://github.com/theme-next/theme-next-pace source/lib/pace 等等…… 添加搜索功能 安装插件 12npm install hexo-generator-searchnpm install hexo-generator-searchdb 修改hexo配置根目录下_config.yml中增加如下配置: 12345search: path: search.xml field: post format: html limit: 10000 配置next中的搜索入口打开themes/next/_config.yml，修改配置: 1234local_search: enable: true trigger: auto top_n_per_article: 1 参考链接：为hexo和next增加站内搜索功能 迁移把Jekyll目录下的_posts中文章全部复制到Hexo目录下的source/_posts中，并把文章名统一为:year-:month-:day-:title.md，需要注意的是_开头的文章不会显示，最后修改文章参数： 123456---title: blog titledate: YYYY-MM-DD HH:mm:ss categories: misctags: [tag1, tag2]--- 文章太长则需要手动添加&lt;!-- more --&gt;以显示阅读全文。 部署 (Git)部署前可以先本地运行试看效果，在根目录运行服务器命令：1$hexo server 简写 hexo s 然后打开浏览器访问查看博客（默认：http://localhost:4000 ） 本地试运行的博客没有问题后就可以去部署到Github上了。 本地配置deploy,打开根目录_config.yml。 12345deploy: - type: git repo: git@github.com:blackchy/blackchy.github.io.git branch: [master] message: a commit message 安装hexo-deployer-git 1$ npm install hexo-deployer-git --save 执行部署 1$ hexo g -d 注意事项 由于Jekyll上传github服务器会自动生成并部署，而Hexo需要本地生成静态文件再上传，所以需要另起一个分支存放hexo源码。 通过git克隆下来的theme、js，删除对应的.git文件夹。 至此，迁移完毕。]]></content>
+      <categories>
+        <category>misc</category>
+      </categories>
+      <tags>
+        <tag>jekyll</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[String 相关]]></title>
+    <url>%2F2018%2F11%2F30%2F2018-11-30-String-About%2F</url>
+    <content type="text"><![CDATA[Android中String相关的操作，把它们记录下来。 修改部分字体大小原字体：字体大小改变 &nbsp;&nbsp;修改后：字体大小改 变12345CharSequence charSequence1 = &quot;字体改变大小&quot;;SpannableString spannableString = new SpannableString(charSequence1); spannableString.setSpan(new RelativeSizeSpan(0.5f), charSequence1.length() - 1, charSequence1.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);tvTitle.setText(spannableString); 修改部分字体颜色原字体：字体改变颜色 &nbsp;&nbsp;修改后：字体改变颜 色1234567CharSequence charSequence = &quot;字体改变颜色&quot;;SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(charSequence);spannableStringBuilder.setSpan( new ForegroundColorSpan(getResources().getColor(R.color.gl_vip_up)), spannableStringBuilder.length() - 1, spannableStringBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);tvTitle.setText(spannableStringBuilder); 注：待补充]]></content>
+      <categories>
+        <category>android</category>
+      </categories>
+      <tags>
+        <tag>string</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Git:操作和问题的收集]]></title>
+    <url>%2F2018%2F09%2F17%2F2018-09-17-Git-Operations-Problem%2F</url>
+    <content type="text"><![CDATA[Git是一个很好的工具，偶尔想用某个命令的时候却突然忘记了:(，网上再去查找又有点浪费时间，所以收集了一些常用的命令，顺带一些其他相关的东西。 Git安装Git安装、配置等教程省略，网上搜索。 GitHubGithub上创建空项目会提示如何初步使用 Git操作收集 git变基 在需要变基的分支上： #git rebase &lt;other branch&gt; 如果有冲突，解决冲突后 #git rebase --continue git合并commit并强推 查看有几笔提交 #git log 编辑commit（n为commit数量） #git rebase -i HEAD~n 强推到远程 #git push -f origin chy/add-market 终止rebase #git rebase --abort git合并分支到new主分支 #git rebase -i new-master git合并其他分支到当前分支 #git merge &lt;other branch&gt; 如果没有冲突，直接就完成了 如果有冲突，则解决冲突，然后执行： #git add . #git commit git回到之前的节点 (首先#git log查看节点) 回到节点06b3680，并保留更改 #git reset --soft 06b3680 回到节点06b3680，并丢弃修改 #git reset --hard 06b3680 git获取远程分支 #git fetch #git checkout -b local-branchname origin/remote_branchname git强制覆盖本地文件 #git fetch --all #git reset --hard origin/master #git pull git强制跳转到某个版本 查看所有的commit git log -g 强制跳转到某个commit版本 git reset --hard d87da1f81de631fbe68c60c1e192aebce5a3cc72 git提交、拉取、推送 提交全部 #git add -A #git commit -m &quot;Your mark!&quot; 拉取同步远程仓库master分支 #git pull origin master 推送到远程仓库master分支 #git push origin master git修改远程仓库地址 #git remote set-url origin http://xxxxx.git git暂存文件 将文件放入暂存区 #git stash 弹出暂存区的文件 #git stash pop 丢弃暂存区的文件 #git stash drop Git问题收集 error: RPC failed; result=22, HTTP code = 411 fatal: The remote end hung up unexpectedly fatal: The remote end hung up unexpectedly 这个是因为http buffer不够造成的，可以简单配置git来解决： git config http.postBuffer 67108864 2.想要把已经push的文件（夹）加入到.ignore中 直接添加到.ignore中是不能成功的，因为已经push到服务器了，需要先删除本地缓存的文件： git rm -r –cached .idea 然后再将其添加到.ignore中，最后git push就ok了 有些文件无法删除，比如sh.exe.stackdump，亦可用此法。 修正： 处理sh.exe.stackdump文件方法： 关闭SourceTree AndroidStudio中删除sh.exe.stackdump文件 再进行git相关操作，不会因为sh.exe.stackdump文件而出现问题 fatal: Unable to create &#39;/.git/index.lock&#39;: File exists. 解决办法： $rm -f ./.git/index.lock In your repository directory. Pro Git(中文版) 链接Pro Git(中文版)]]></content>
+      <categories>
+        <category>git</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[GitHub Pages与阿里云域名的绑定]]></title>
+    <url>%2F2018%2F09%2F15%2F2018-09-15-GitHubPages-Binding-Aliyun%2F</url>
+    <content type="text"><![CDATA[搭建好自己的个人博客过后，会发现博客的访问地址是github.io后缀，于是我在阿里云买了一个域名，并把这个域名指向了我的博客服务器地址。 获取github pages的ip地址 配置阿里云域名解析 配置github pages的custom domain进入github pages项目的设置，将解析的域名地址添加到custom domain中并保存。 验证blog : blackchy’s blog]]></content>
+      <categories>
+        <category>misc</category>
+      </categories>
+      <tags>
+        <tag>github</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Github个人博客创建流程]]></title>
+    <url>%2F2018%2F09%2F15%2F2018-09-15-Github-Person-Blog-Create%2F</url>
+    <content type="text"><![CDATA[有些有价值的东西我想把它记录下来，所以拥有自己的博客方便记录它们是一件非常令人高兴的事。Github Pages提供了自己搭建服务器的渠道，由Github提供的博客服务器是免费且不限空间的。以下是我在网上慢慢查找的搭建博客的简略流程。 注册登录github帐号。Github 具体注册登录等流程网上搜索，这里不作阐述。 创建博客项目 在github新建一个repository,这里的Repository name输入自己github账号的username，比如blackchy，之后会成功创建一个项目xxx.github.io，然后https://xxx.github.io就是个人博客的网址。 在xxx.github.io项目点进Settings，找到GitHub Pages模块，Theme Chooser可以选择一个博客的主题，不过一般都是在jekyll或其他地方寻找合适的主题，下面会简单介绍jekyll。Custom domain可以修改博客地址，如果有自己的个人域名可以修改成自己的域名网址，而不用https://xxx.github.io作为博客地址。 设计自己的博客网站可以自己写一个html网站作为博客网站，但是那样对非专业人士、懒人等来说不太友好，所以推荐使用别人写好的模板直接下载下来使用，选择的时候尽量选可塑性较强的模板，以便后面进行修改。jekyll模板地址如下： http://jekyllthemes.org/ 下载安装桌面github以便对项目进行管理，地址如下： Windows：https://windows.github.com/ Mac：https://mac.github.com/ 把github上的xxx.github.io项目克隆到本地，然后下载选择好的模板。删除掉本地项目的所有文件和文件夹(.git文件夹除外)，然后把模板的所有文件和文件夹复制到本地项目中，然后commit并推到github远程仓库，大概几秒到1分钟内，刷新https://xxx.github.io网页就能看到已经复制过来的网站了。 最后，修改一下模板里面的信息再更新，这就是一个完全属于自己的个人博客了。 注：一般博客都是放在posts这个文件夹，用markdown写的，弄好自己的博客网站之后就可以开心地更新博客了。]]></content>
+      <categories>
+        <category>misc</category>
+      </categories>
+      <tags>
+        <tag>github</tag>
+      </tags>
+  </entry>
+</search>
