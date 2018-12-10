@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/uploads/avatar.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/uploads/avatar.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/uploads/avatar.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/uploads/avatar.png?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.6.0',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: true,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="使用fmod实现变声效果。">
+<meta name="keywords" content="audio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fmod变声">
+<meta property="og:url" content="http://blackchy.com/2018/12/10/2018-12-10-Fmod-Voice-Change/index.html">
+<meta property="og:site_name" content="Black Chy&#39;s Blog">
+<meta property="og:description" content="使用fmod实现变声效果。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blackchy.com/uploads/fmod-voice-change/fmod-download.png">
+<meta property="og:image" content="http://blackchy.com/uploads/fmod-voice-change/new-project.png">
+<meta property="og:image" content="http://blackchy.com/uploads/fmod-voice-change/new-project2.png">
+<meta property="og:image" content="http://blackchy.com/uploads/fmod-voice-change/add-api.png">
+<meta property="og:image" content="http://blackchy.com/uploads/fmod-voice-change/modify-gradle.png">
+<meta property="og:image" content="http://blackchy.com/uploads/fmod-voice-change/page.png">
+<meta property="og:updated_time" content="2018-12-10T07:40:03.865Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fmod变声">
+<meta name="twitter:description" content="使用fmod实现变声效果。">
+<meta name="twitter:image" content="http://blackchy.com/uploads/fmod-voice-change/fmod-download.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://blackchy.com/2018/12/10/2018-12-10-Fmod-Voice-Change/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>fmod变声 | Black Chy's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Black Chy's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">香蕉是最受欢迎的水果。</h1>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blackchy.com/2018/12/10/2018-12-10-Fmod-Voice-Change/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Black Chy">
+      <meta itemprop="description" content="Just a dog.">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black Chy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">fmod变声
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-10 00:00:01" itemprop="dateCreated datePublished" datetime="2018-12-10T00:00:01+08:00">2018-12-10</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/android/" itemprop="url" rel="index"><span itemprop="name">android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>使用<a href="https://www.fmod.com/" target="_blank" rel="noopener">fmod</a>实现变声效果。<br><a id="more"></a></p>
+<h3 id="下载-fmod-API"><a href="#下载-fmod-API" class="headerlink" title="下载 fmod API"></a>下载 fmod API</h3><p>进入<a href="https://www.fmod.com/download" target="_blank" rel="noopener">fmod download</a>下载Android API。</p>
+<p><img src="/uploads/fmod-voice-change/fmod-download.png" alt="img"></p>
+<h3 id="新建项目"><a href="#新建项目" class="headerlink" title="新建项目"></a>新建项目</h3><p>勾选include c/c++ support。</p>
+<p><img src="/uploads/fmod-voice-change/new-project.png" alt="img"></p>
+<p>勾选异常检测和安全转换</p>
+<p><img src="/uploads/fmod-voice-change/new-project2.png" alt="img"></p>
+<h3 id="加入API"><a href="#加入API" class="headerlink" title="加入API"></a>加入API</h3><p>打开下载之后解压的fmod API目录，到<code>api/lowlevel</code>文件夹，把<code>inc</code>文件夹及里面的文件全部复制到项目的<code>app/src/main/cpp</code>文件夹中,把<code>lib</code>文件夹中的所有文件夹和文件复制到项目的<code>app/libs</code>文件夹中，jar包要右键<code>add as library</code>。</p>
+<p><img src="/uploads/fmod-voice-change/add-api.png" alt="img"></p>
+<h3 id="配置app-build-gradle"><a href="#配置app-build-gradle" class="headerlink" title="配置app/build.gradle"></a>配置app/build.gradle</h3><p>android/defaultConfig里新增：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ndk &#123;</span><br><span class="line">  abiFilters &quot;armeabi&quot;,&quot;arm64-v8a&quot;,&quot;armeabi-v7a&quot;,&quot;x86&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>android里新增：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sourceSets.main &#123;</span><br><span class="line">  jniLibs.srcDirs = [&apos;libs&apos;]</span><br><span class="line">  jni.srcDirs = []</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/uploads/fmod-voice-change/modify-gradle.png" alt="img"></p>
+<h3 id="配置app-CMakeLists-txt"><a href="#配置app-CMakeLists-txt" class="headerlink" title="配置app/CMakeLists.txt"></a>配置app/CMakeLists.txt</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">cmake_minimum_required(VERSION 3.4.1)</span><br><span class="line"></span><br><span class="line">#-----------------------------------------</span><br><span class="line">find_library( log-lib</span><br><span class="line">              log )</span><br><span class="line"></span><br><span class="line">set(my_lib_path $&#123;CMAKE_SOURCE_DIR&#125;/libs)</span><br><span class="line"></span><br><span class="line"># 添加三方的so库</span><br><span class="line">add_library(libfmod</span><br><span class="line">            SHARED</span><br><span class="line">            IMPORTED )</span><br><span class="line"></span><br><span class="line"> # 指名第三方库的绝对路径</span><br><span class="line"> set_target_properties( libfmod</span><br><span class="line">                        PROPERTIES IMPORTED_LOCATION</span><br><span class="line">                        $&#123;my_lib_path&#125;/$&#123;ANDROID_ABI&#125;/libfmod.so )</span><br><span class="line"></span><br><span class="line"> add_library(libfmodL</span><br><span class="line">             SHARED</span><br><span class="line">             IMPORTED )</span><br><span class="line"></span><br><span class="line"> set_target_properties( libfmodL</span><br><span class="line">                        PROPERTIES IMPORTED_LOCATION</span><br><span class="line">                        $&#123;my_lib_path&#125;/$&#123;ANDROID_ABI&#125;/libfmodL.so )</span><br><span class="line"></span><br><span class="line">set(CMAKE_CXX_FLAGS &quot;$&#123;CMAKE_CXX_FLAGS&#125; -std=gnu++11&quot;)</span><br><span class="line"></span><br><span class="line">#--------------------------------</span><br><span class="line">add_library( # Sets the name of the library.</span><br><span class="line">             changeVoice</span><br><span class="line"></span><br><span class="line">             # Sets the library as a shared library.</span><br><span class="line">             SHARED</span><br><span class="line"></span><br><span class="line">             # Provides a relative path to your source file(s).</span><br><span class="line">             src/main/cpp/native-lib.cpp )</span><br><span class="line"></span><br><span class="line">#---------------------</span><br><span class="line"># 导入路径，为了让编译时能够寻找到这个文件夹</span><br><span class="line">include_directories(src/main/cpp/inc)</span><br><span class="line"></span><br><span class="line"># 链接好三个路径</span><br><span class="line">target_link_libraries( changeVoice</span><br><span class="line">                       libfmod</span><br><span class="line">                       libfmodL</span><br><span class="line"></span><br><span class="line">                       $&#123;log-lib&#125; )</span><br></pre></td></tr></table></figure>
+<h3 id="代码部分"><a href="#代码部分" class="headerlink" title="代码部分"></a>代码部分</h3><p>布局文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;</span><br><span class="line">    android:background=&quot;#FFF&quot;</span><br><span class="line">    android:gravity=&quot;center_horizontal&quot;</span><br><span class="line">    android:orientation=&quot;vertical&quot;</span><br><span class="line">    android:padding=&quot;10pt&quot;</span><br><span class="line">    &gt;</span><br><span class="line"></span><br><span class="line">  &lt;LinearLayout</span><br><span class="line">      android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">      android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">      android:orientation=&quot;horizontal&quot;</span><br><span class="line">      &gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:id=&quot;@+id/btn_1&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;原声&quot;</span><br><span class="line">        /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:id=&quot;@+id/btn_2&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;萝莉&quot;</span><br><span class="line">        /&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:id=&quot;@+id/btn_3&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;大叔&quot;</span><br><span class="line">        /&gt;</span><br><span class="line">  &lt;/LinearLayout&gt;</span><br><span class="line"></span><br><span class="line">  &lt;LinearLayout</span><br><span class="line">      android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">      android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">      android:orientation=&quot;horizontal&quot;</span><br><span class="line">      &gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:id=&quot;@+id/btn_4&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;惊悚&quot;</span><br><span class="line">        /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:id=&quot;@+id/btn_5&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;搞怪&quot;</span><br><span class="line">        /&gt;</span><br><span class="line"></span><br><span class="line">    &lt;Button</span><br><span class="line">        android:id=&quot;@+id/btn_6&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;空灵&quot;</span><br><span class="line">        /&gt;</span><br><span class="line">  &lt;/LinearLayout&gt;</span><br><span class="line">&lt;/LinearLayout&gt;</span><br></pre></td></tr></table></figure></p>
+<p>java代码，新建Util类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class Util &#123;</span><br><span class="line"></span><br><span class="line">  //音效的类型</span><br><span class="line">  public static final int MODE_NORMAL = 0;//正常</span><br><span class="line">  public static final int MODE_LUOLI = 1;//萝莉</span><br><span class="line">  public static final int MODE_DASHU = 2;//大叔</span><br><span class="line">  public static final int MODE_JINGSONG = 3;//惊悚</span><br><span class="line">  public static final int MODE_GAOGUAI = 4;//搞怪</span><br><span class="line">  public static final int MODE_KONGLING = 5;//空灵</span><br><span class="line"></span><br><span class="line">  /**</span><br><span class="line">   * 变声</span><br><span class="line">   *</span><br><span class="line">   * @param path 声音路径</span><br><span class="line">   * @param type 变声类型</span><br><span class="line">   */</span><br><span class="line">  public static native void voiceChange(String path, int type);</span><br><span class="line"></span><br><span class="line">  static &#123;</span><br><span class="line">    System.loadLibrary(&quot;fmodL&quot;);</span><br><span class="line">    System.loadLibrary(&quot;fmod&quot;);</span><br><span class="line">    System.loadLibrary(&quot;changeVoice&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>java代码，MainActivity类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line"></span><br><span class="line">  @Override protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">    super.onCreate(savedInstanceState);</span><br><span class="line">    FMOD.init(this);</span><br><span class="line">    setContentView(R.layout.activity_main);</span><br><span class="line">    findViewById(R.id.btn_1).setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">      @Override public void onClick(View v) &#123;</span><br><span class="line">        VoiceFun1(v);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    findViewById(R.id.btn_2).setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">      @Override public void onClick(View v) &#123;</span><br><span class="line">        VoiceFun2(v);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    findViewById(R.id.btn_3).setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">      @Override public void onClick(View v) &#123;</span><br><span class="line">        VoiceFun3(v);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    findViewById(R.id.btn_4).setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">      @Override public void onClick(View v) &#123;</span><br><span class="line">        VoiceFun4(v);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    findViewById(R.id.btn_5).setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">      @Override public void onClick(View v) &#123;</span><br><span class="line">        VoiceFun5(v);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    findViewById(R.id.btn_6).setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">      @Override public void onClick(View v) &#123;</span><br><span class="line">        VoiceFun6(v);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public void VoiceFun1(View btn) &#123;</span><br><span class="line">    String path = Environment.getExternalStorageDirectory().getAbsolutePath()</span><br><span class="line">        + File.separatorChar</span><br><span class="line">        + &quot;/Download/10028.wav&quot;;</span><br><span class="line">    File file = new File(path);</span><br><span class="line">    if (file.exists()) &#123;</span><br><span class="line">      Toast.makeText(this, &quot;变声-正常&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">      Util.voiceChange(path, Util.MODE_NORMAL);</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;VoiceFun1&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;file is not exist&quot;);</span><br><span class="line">      Toast.makeText(this, &quot;file is not exist&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public void VoiceFun2(View btn) &#123;</span><br><span class="line">    String path = Environment.getExternalStorageDirectory().getAbsolutePath()</span><br><span class="line">        + File.separatorChar</span><br><span class="line">        + &quot;/Download/10028.wav&quot;;</span><br><span class="line">    File file = new File(path);</span><br><span class="line">    if (file.exists()) &#123;</span><br><span class="line">      Toast.makeText(this, &quot;变声-萝莉&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">      Util.voiceChange(path, Util.MODE_LUOLI);</span><br><span class="line">      Log.d(&quot;jason&quot;, &quot;VoiceFun2&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;file is not exist&quot;);</span><br><span class="line">      Toast.makeText(this, &quot;file is not exist&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public void VoiceFun3(View btn) &#123;</span><br><span class="line">    String path = Environment.getExternalStorageDirectory().getAbsolutePath()</span><br><span class="line">        + File.separatorChar</span><br><span class="line">        + &quot;/Download/10028.wav&quot;;</span><br><span class="line">    File file = new File(path);</span><br><span class="line">    if (file.exists()) &#123;</span><br><span class="line">      Toast.makeText(this, &quot;变声-大叔&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">      Util.voiceChange(path, Util.MODE_DASHU);</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;VoiceFun3&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;file is not exist&quot;);</span><br><span class="line">      Toast.makeText(this, &quot;file is not exist&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public void VoiceFun4(View btn) &#123;</span><br><span class="line">    String path = Environment.getExternalStorageDirectory().getAbsolutePath()</span><br><span class="line">        + File.separatorChar</span><br><span class="line">        + &quot;/Download/10028.wav&quot;;</span><br><span class="line">    File file = new File(path);</span><br><span class="line">    if (file.exists()) &#123;</span><br><span class="line">      Toast.makeText(this, &quot;变声-惊悚&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">      Util.voiceChange(path, Util.MODE_JINGSONG);</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;VoiceFun4&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;file is not exist&quot;);</span><br><span class="line">      Toast.makeText(this, &quot;file is not exist&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public void VoiceFun5(View btn) &#123;</span><br><span class="line">    String path = Environment.getExternalStorageDirectory().getAbsolutePath()</span><br><span class="line">        + File.separatorChar</span><br><span class="line">        + &quot;/Download/10028.wav&quot;;</span><br><span class="line">    File file = new File(path);</span><br><span class="line">    if (file.exists()) &#123;</span><br><span class="line">      Toast.makeText(this, &quot;变声-搞笑&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">      Util.voiceChange(path, Util.MODE_GAOGUAI);</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;VoiceFun5&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;file is not exist&quot;);</span><br><span class="line">      Toast.makeText(this, &quot;file is not exist&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public void VoiceFun6(View btn) &#123;</span><br><span class="line">    String path = Environment.getExternalStorageDirectory().getAbsolutePath()</span><br><span class="line">        + File.separatorChar</span><br><span class="line">        + &quot;/Download/10028.wav&quot;;</span><br><span class="line">    File file = new File(path);</span><br><span class="line">    if (file.exists()) &#123;</span><br><span class="line">      Toast.makeText(this, &quot;变声-空灵&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">      Util.voiceChange(path, Util.MODE_KONGLING);</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;VoiceFun6&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      Log.e(&quot;x---&quot;, &quot;file is not exist&quot;);</span><br><span class="line">      Toast.makeText(this, &quot;file is not exist&quot;, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override protected void onDestroy() &#123;</span><br><span class="line">    super.onDestroy();</span><br><span class="line">    FMOD.close();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override public void onBackPressed() &#123;</span><br><span class="line">    super.onBackPressed();</span><br><span class="line">    finish();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>C++代码，app/src/main/cpp/native-lib.cpp:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;jni.h&gt;</span><br><span class="line">#include &quot;inc/fmod.hpp&quot;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line"></span><br><span class="line">#include &lt;unistd.h&gt;</span><br><span class="line"></span><br><span class="line">using namespace FMOD;</span><br><span class="line"></span><br><span class="line">#define MODE_NORMAL 0</span><br><span class="line">#define MODE_LUOLI 1</span><br><span class="line">#define MODE_DASHU 2</span><br><span class="line">#define MODE_JINGSONG 3</span><br><span class="line">#define MODE_GAOGUAI 4</span><br><span class="line">#define MODE_KONGLING 5</span><br><span class="line"></span><br><span class="line">#include &lt;android/log.h&gt;</span><br><span class="line"></span><br><span class="line">#define LOGI(FORMAT, ...) __android_log_print(ANDROID_LOG_INFO,&quot;voiceChange&quot;,FORMAT,##__VA_ARGS__);</span><br><span class="line">#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,&quot;voiceChange&quot;,FORMAT,##__VA_ARGS__);</span><br><span class="line"></span><br><span class="line">extern &quot;C&quot;</span><br><span class="line">JNIEXPORT void JNICALL</span><br><span class="line">Java_com_exp_fmodvoicechange_Util_voiceChange(JNIEnv *env, jclass cls, jstring path_str, jint type) &#123;</span><br><span class="line">    System * system;</span><br><span class="line">    Sound * sound;</span><br><span class="line">    Channel  *channel;</span><br><span class="line">    DSP *dsp;</span><br><span class="line">    bool playing= true;</span><br><span class="line">    float frequency=1;</span><br><span class="line"></span><br><span class="line">    //初始化</span><br><span class="line">    System_Create(&amp;system);</span><br><span class="line">    system-&gt;init(32, FMOD_INIT_NORMAL, NULL);</span><br><span class="line"></span><br><span class="line">    //将string转成char*</span><br><span class="line">    const char* path=env-&gt;GetStringUTFChars(path_str,NULL);</span><br><span class="line"></span><br><span class="line">    //创建声音</span><br><span class="line">    system-&gt;createSound(path,FMOD_DEFAULT, 0, &amp;sound);</span><br><span class="line">    try &#123;</span><br><span class="line">        //根据类型改变声音</span><br><span class="line">        switch (type) &#123;</span><br><span class="line">            case MODE_NORMAL:</span><br><span class="line">                //正常声音</span><br><span class="line">                system-&gt;playSound(sound, 0, false, &amp;channel);</span><br><span class="line">                break;</span><br><span class="line">            case MODE_LUOLI:</span><br><span class="line">                //萝莉</span><br><span class="line">                //DSP digital signal process</span><br><span class="line">                //dsp -&gt; 音效 创建fmod中预定义好的音效</span><br><span class="line">                //FMOD_DSP_TYPE_PITCHSHIFT dsp，提升或者降低音调用的一种音效</span><br><span class="line">                system-&gt;createDSPByType(FMOD_DSP_TYPE_PITCHSHIFT, &amp;dsp);</span><br><span class="line">                //提高音效</span><br><span class="line">                dsp-&gt;setParameterFloat(FMOD_DSP_TYPE_PITCHSHIFT, 2.5);</span><br><span class="line">                //播放声音</span><br><span class="line">                system-&gt;playSound(sound, 0, false, &amp;channel);</span><br><span class="line">                //将channel添加到dsp</span><br><span class="line">                channel-&gt;addDSP(0, dsp);</span><br><span class="line">                break;</span><br><span class="line">            case MODE_DASHU:</span><br><span class="line">                //大叔</span><br><span class="line">                system-&gt;createDSPByType(FMOD_DSP_TYPE_PITCHSHIFT, &amp;dsp);</span><br><span class="line">                //降低声音</span><br><span class="line">                dsp-&gt;setParameterFloat(FMOD_DSP_PITCHSHIFT_PITCH, 0.8);</span><br><span class="line">                //播放声音</span><br><span class="line">                system-&gt;playSound(sound, 0, false, &amp;channel);</span><br><span class="line">                //将channel添加到dsp</span><br><span class="line">                channel-&gt;addDSP(0, dsp);</span><br><span class="line">                break;</span><br><span class="line">            case MODE_JINGSONG:</span><br><span class="line">                //惊悚</span><br><span class="line">                system-&gt;createDSPByType(FMOD_DSP_TYPE_TREMOLO, &amp;dsp);</span><br><span class="line">                dsp-&gt;setParameterFloat(FMOD_DSP_TREMOLO_SKEW, 0.5);</span><br><span class="line">                system-&gt;playSound(sound, 0, false, &amp;channel);</span><br><span class="line">                channel-&gt;addDSP(0, dsp);</span><br><span class="line">                break;</span><br><span class="line">            case MODE_GAOGUAI:</span><br><span class="line">                //搞怪</span><br><span class="line">                //提高说话的速度</span><br><span class="line">                system-&gt;playSound(sound, 0, false, &amp;channel);</span><br><span class="line">                //frequency  原来的声音速度</span><br><span class="line">                channel-&gt;getFrequency(&amp;frequency);</span><br><span class="line">                frequency = frequency * 1.6;</span><br><span class="line">                channel-&gt;setFrequency(frequency);</span><br><span class="line">                break;</span><br><span class="line">            case MODE_KONGLING:</span><br><span class="line">                //空灵</span><br><span class="line">                system-&gt;createDSPByType(FMOD_DSP_TYPE_ECHO, &amp;dsp);</span><br><span class="line">                dsp-&gt;setParameterFloat(FMOD_DSP_ECHO_DELAY, 300);</span><br><span class="line">                dsp-&gt;setParameterFloat(FMOD_DSP_ECHO_FEEDBACK, 20);</span><br><span class="line">                system-&gt;playSound(sound, 0, false, &amp;channel);</span><br><span class="line">                channel-&gt;addDSP(0, dsp);</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    catch (...)&#123;</span><br><span class="line">        //捕捉异常</span><br><span class="line">        LOGE(&quot;%s&quot;,&quot;发生异常&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    system-&gt;update();</span><br><span class="line">    //释放资源</span><br><span class="line">    //单位是微秒</span><br><span class="line">    //每秒钟判断下是否在播放</span><br><span class="line">    while(playing)&#123;</span><br><span class="line">        channel-&gt;isPlaying(&amp;playing);</span><br><span class="line">        usleep(1000 * 1000);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //释放</span><br><span class="line">    sound-&gt;release();</span><br><span class="line">    system-&gt;close();</span><br><span class="line">    system-&gt;release();</span><br><span class="line">    env-&gt;ReleaseStringUTFChars(path_str,path);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><ul>
+<li>界面：<br><img src="/uploads/fmod-voice-change/page.png" alt="img"></li>
+<li>项目配置：<ol>
+<li>Android Studio 2.3.3</li>
+<li>gradle 2.3.3</li>
+<li>sdk version 26</li>
+<li><a href="https://www.fmod.com/download" target="_blank" rel="noopener">fmod API version 1.10.10</a></li>
+<li><a href="https://developer.android.google.cn/ndk/downloads/older_releases" target="_blank" rel="noopener">ndk version 14</a></li>
+</ol>
+</li>
+<li><p>权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- xmlns:tools=&quot;http://schemas.android.com/tools&quot; --&gt;</span><br><span class="line">&lt;!--读写sd卡权限--&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot; /&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; /&gt;</span><br><span class="line">&lt;uses-permission</span><br><span class="line">      android:name=&quot;android.permission.MOUNT_UNMOUNT_FILESYSTEMS&quot;</span><br><span class="line">      tools:ignore=&quot;ProtectedPermissions&quot; /&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="https://github.com/blackchy/FmodVoiceChange" target="_blank" rel="noopener">项目地址</a></p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/audio/" rel="tag"># audio</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/04/2018-12-04-Jekyll-To-Hexo/" rel="next" title="博客-Jekyll迁移到Hexo">
+                <i class="fa fa-chevron-left"></i> 博客-Jekyll迁移到Hexo
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="Black Chy">
+            
+              <p class="site-author-name" itemprop="name">Black Chy</p>
+              <p class="site-description motion-element" itemprop="description">Just a dog.</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/BlackChy" title="GitHub &rarr; https://github.com/BlackChy" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:haiyu.chen@foxmail.com" title="E-Mail &rarr; mailto:haiyu.chen@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载-fmod-API"><span class="nav-number">1.</span> <span class="nav-text">下载 fmod API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建项目"><span class="nav-number">2.</span> <span class="nav-text">新建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加入API"><span class="nav-number">3.</span> <span class="nav-text">加入API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置app-build-gradle"><span class="nav-number">4.</span> <span class="nav-text">配置app/build.gradle</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置app-CMakeLists-txt"><span class="nav-number">5.</span> <span class="nav-text">配置app/CMakeLists.txt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码部分"><span class="nav-number">6.</span> <span class="nav-text">代码部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后"><span class="nav-number">7.</span> <span class="nav-text">最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Black Chy</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a></div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+  
+  <script src="/lib/pangu/dist/pangu.min.js?v=3.3"></script>
+  <script type="text/javascript">pangu.spacingPage();</script>
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+
+  
+
+</body>
+</html>
