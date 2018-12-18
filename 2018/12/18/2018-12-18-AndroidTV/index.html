@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/uploads/avatar.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/uploads/avatar.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/uploads/avatar.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/uploads/avatar.png?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.6.0',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: false,
+    fastclick: true,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="机顶盒现在基本都是通过安装的APK进行操作的，这些APK又分为EPG(Android嵌套Web，主要为Web端开发)和AndroidTV原生(主要为Android开发)，本文介绍AndroidTV开发入门流程。AndroidTV和手机App开发的主要区别就是它的布局是按照横屏显示器布局的，而且它是焦点控制（手机App主要是屏幕点击控制），在音视频方面比手机App需要注意更多的细节，以及其他一些小问">
+<meta name="keywords" content="AndroidTV">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AndroidTV入门">
+<meta property="og:url" content="http://blackchy.com/2018/12/18/2018-12-18-AndroidTV/index.html">
+<meta property="og:site_name" content="Black Chy&#39;s Blog">
+<meta property="og:description" content="机顶盒现在基本都是通过安装的APK进行操作的，这些APK又分为EPG(Android嵌套Web，主要为Web端开发)和AndroidTV原生(主要为Android开发)，本文介绍AndroidTV开发入门流程。AndroidTV和手机App开发的主要区别就是它的布局是按照横屏显示器布局的，而且它是焦点控制（手机App主要是屏幕点击控制），在音视频方面比手机App需要注意更多的细节，以及其他一些小问">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://blackchy.com/uploads/androidtv/andridtv_gh_list.gif">
+<meta property="og:image" content="http://blackchy.com/uploads/androidtv/andridtv_rg_list.gif">
+<meta property="og:image" content="http://blackchy.com/uploads/androidtv/androidtv_gn_list.gif">
+<meta property="og:image" content="http://blackchy.com/uploads/androidtv/androidtv_rs_list.gif">
+<meta property="og:image" content="http://blackchy.com/uploads/androidtv/androidtv_o.gif">
+<meta property="og:updated_time" content="2018-12-18T08:51:21.728Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AndroidTV入门">
+<meta name="twitter:description" content="机顶盒现在基本都是通过安装的APK进行操作的，这些APK又分为EPG(Android嵌套Web，主要为Web端开发)和AndroidTV原生(主要为Android开发)，本文介绍AndroidTV开发入门流程。AndroidTV和手机App开发的主要区别就是它的布局是按照横屏显示器布局的，而且它是焦点控制（手机App主要是屏幕点击控制），在音视频方面比手机App需要注意更多的细节，以及其他一些小问">
+<meta name="twitter:image" content="http://blackchy.com/uploads/androidtv/andridtv_gh_list.gif">
+
+
+
+
+
+
+  <link rel="canonical" href="http://blackchy.com/2018/12/18/2018-12-18-AndroidTV/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>AndroidTV入门 | Black Chy's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Black Chy's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">香蕉是最受欢迎的水果。</h1>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blackchy.com/2018/12/18/2018-12-18-AndroidTV/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Black Chy">
+      <meta itemprop="description" content="Just a dog.">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Black Chy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">AndroidTV入门
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-18 15:38:36" itemprop="dateCreated datePublished" datetime="2018-12-18T15:38:36+08:00">2018-12-18</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/android/" itemprop="url" rel="index"><span itemprop="name">android</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>机顶盒现在基本都是通过安装的APK进行操作的，这些APK又分为EPG(Android嵌套Web，主要为Web端开发)和AndroidTV原生(主要为Android开发)，本文介绍AndroidTV开发入门流程。AndroidTV和手机App开发的主要区别就是它的布局是按照横屏显示器布局的，而且它是焦点控制（手机App主要是屏幕点击控制），在音视频方面比手机App需要注意更多的细节，以及其他一些小问题。还有比较重要的一点，AndroidTV需要考虑更多硬件的问题以及适配更老的Android版本，甚至是4.4以前的版本都有可能需要考虑。<br><a id="more"></a></p>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>大多数机顶盒的版本都比较低，所以AndroidStudio不推荐使用3.0（推荐2.3.3）及以上的版本进行开发，还有jdk版本也是一样（1.8足够了），所以记得复制别人代码的时候把lambda表达式改成常规的表达式，等等等等。</p>
+<h3 id="适配"><a href="#适配" class="headerlink" title="适配"></a>适配</h3><ol>
+<li><p>文字间距等布局时统一使用pt作为单位，例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;TextView</span><br><span class="line">      android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">      android:layout_height=&quot;30pt&quot;</span><br><span class="line">      android:gravity=&quot;center&quot;</span><br><span class="line">      android:paddingLeft=&quot;10pt&quot;</span><br><span class="line">      android:paddingRight=&quot;10pt&quot;</span><br><span class="line">      android:text=&quot;Text&quot;</span><br><span class="line">      android:textColor=&quot;@color/colorWhite&quot;</span><br><span class="line">      android:textSize=&quot;20pt&quot;</span><br><span class="line">      /&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>屏幕适配则使用<a href="https://github.com/JessYanCoding/AndroidAutoSize" target="_blank" rel="noopener">JessYan的Android适配方案</a>，首先添加依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">compile &apos;me.jessyan:autosize:1.0.6&apos;</span><br></pre></td></tr></table></figure>
+<p>然后在自定义<code>Applicatio</code>的<code>create</code>方法中添加适配：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AutoSizeConfig.getInstance().getUnitsManager().setSupportDP(false).setSupportSubunits(Subunits.PT);</span><br></pre></td></tr></table></figure>
+<p>最后，代码中需要转换的地方则用<code>AutoSizeUtils</code>里面的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rvtItem.setSpacingWithMargins(AutoSizeUtils.pt2px(context, 20),</span><br><span class="line">    AutoSizeUtils.pt2px(context, 20));</span><br></pre></td></tr></table></figure>
+<p>当然，肯定还有其他更好的适配方式。</p>
+</li>
+</ol>
+<h3 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h3><p>AndroidTV开发中经常用到列表这种布局，这里有两种方法。</p>
+<ol>
+<li><p>Google提供的<a href="https://github.com/googlesamples/androidtv-Leanback" target="_blank" rel="noopener">androidtv-Leanback</a>。<br>布局文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;com.example.core.leanback.HorizontalGridView</span><br><span class="line">    android:id=&quot;@+id/hgv_item&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_marginTop=&quot;100pt&quot;</span><br><span class="line">    android:clipChildren=&quot;false&quot;</span><br><span class="line">    android:clipToPadding=&quot;false&quot;</span><br><span class="line">    android:padding=&quot;20pt&quot;</span><br><span class="line">    /&gt;</span><br></pre></td></tr></table></figure>
+<p>其中<code>android:clipChildren=&quot;false&quot;</code>和<code>android:clipToPadding=&quot;false&quot;</code>是为了做选中放大子视图时避免子视图不完整。</p>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">//@BindView(R.id.hgv_item) HorizontalGridView hgvItem;</span><br><span class="line">//private ListItemAdapter listItemAdapter;</span><br><span class="line">listItemAdapter = new ListItemAdapter();</span><br><span class="line">hgvItem.setAdapter(listItemAdapter);</span><br><span class="line">hgvItem.setHorizontalSpacing(AutoSizeUtils.pt2px(context, 20));</span><br><span class="line">hgvItem.setOnItemListener(new OnItemListener() &#123;</span><br><span class="line">  @Override public void onItemSelected(Object parent, View itemView, int position) &#123;</span><br><span class="line">    itemView.animate()</span><br><span class="line">        .scaleX(1.05f)</span><br><span class="line">        .scaleY(1.05f)</span><br><span class="line">        .setInterpolator(new BounceInterpolator())</span><br><span class="line">        .setDuration(300)</span><br><span class="line">        .start();</span><br><span class="line">    itemView.setBackgroundResource(R.drawable.bg_item);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override public void onItemPreSelected(Object parent, View itemView, int position) &#123;</span><br><span class="line">    itemView.animate()</span><br><span class="line">        .scaleX(1.0f)</span><br><span class="line">        .scaleY(1.0f)</span><br><span class="line">        .setInterpolator(new BounceInterpolator())</span><br><span class="line">        .setDuration(300)</span><br><span class="line">        .start();</span><br><span class="line">    itemView.setBackgroundColor(getResources().getColor(android.R.color.transparent));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">listItemAdapter.setNewData(mockData.listItems);</span><br></pre></td></tr></table></figure>
+<p>其中，<code>setHorizontalSpacing</code>方法为设置子视图之间的水平间距，<code>setOnItemListener</code>为子视图获得焦点和失去焦点的监听，<code>setOnItemListener</code>监听中添加了获得焦点的子视图放大1.05倍的动画和改变子视图背景使获得焦点的子视图视觉上更明显的效果。具体效果如下图：<br><img src="/uploads/androidtv/andridtv_gh_list.gif" alt="img"></p>
+<p><code>Adapter</code>类:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class ListItemAdapter extends BaseQuickAdapter&lt;String, BaseViewHolder&gt; &#123;</span><br><span class="line">  public ListItemAdapter() &#123;</span><br><span class="line">    super(R.layout.item_list);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override protected void convert(BaseViewHolder helper, String item) &#123;</span><br><span class="line">    helper.setText(R.id.tv_text, item);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>子视图布局文件： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:focusable=&quot;true&quot;</span><br><span class="line">    android:focusableInTouchMode=&quot;true&quot;</span><br><span class="line">    android:padding=&quot;2pt&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;FrameLayout</span><br><span class="line">      android:id=&quot;@+id/fl_content&quot;</span><br><span class="line">      android:layout_width=&quot;150pt&quot;</span><br><span class="line">      android:layout_height=&quot;150pt&quot;</span><br><span class="line">      android:background=&quot;@color/colorPrimary&quot;</span><br><span class="line">      &gt;</span><br><span class="line">    &lt;TextView</span><br><span class="line">        android:id=&quot;@+id/tv_text&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_gravity=&quot;center&quot;</span><br><span class="line">        android:text=&quot;text&quot;</span><br><span class="line">        android:textColor=&quot;@android:color/white&quot;</span><br><span class="line">        android:textSize=&quot;25pt&quot;</span><br><span class="line">        /&gt;</span><br><span class="line">  &lt;/FrameLayout&gt;</span><br><span class="line">&lt;/RelativeLayout&gt;</span><br></pre></td></tr></table></figure>
+<p>其中，<code>android:focusable=&quot;true&quot;</code>表示可获取控件的焦点（键盘、遥控器），<code>android:focusableInTouchMode=&quot;true&quot;</code>表示可通过触摸获取焦点（AndroidTV不需要，开发时使用模拟器会用到）。</p>
+<blockquote>
+<p>注：</p>
+<ul>
+<li>leanback的垂直和水平列表是继承RecyclerView的自定义控件。</li>
+<li>leanback默认选中项滑动到屏幕中间位置。</li>
+<li>列表的Adapter继承<a href="https://github.com/CymChad/BaseRecyclerViewAdapterHelper" target="_blank" rel="noopener">BaseRecyclerViewAdapterHelper</a>，方便操作与管理。</li>
+<li>垂直列表基本相同，使用的是<code>VerticalGridView</code>类。</li>
+<li>水平列表有一个拓展类<code>HorizontalRowView</code>，以方便处理嵌套。</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<ol start="2">
+<li><p>Github上有很多开发者自己仿照leanback自定义的RecyclerViewTV，也是继承的Recyclerview，它们也基本都是水平列表、垂直列表用一个布局，通过属性修改。这里找了一个（具体出处忘记了）来用一下。<br>布局文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;com.example.core.view.RecyclerViewTV</span><br><span class="line">    android:id=&quot;@+id/rvt_item&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_marginTop=&quot;100pt&quot;</span><br><span class="line">    android:orientation=&quot;horizontal&quot;</span><br><span class="line">    android:padding=&quot;20pt&quot;</span><br><span class="line">    app:layoutManagerTV=&quot;V7LinearLayoutManage</span><br><span class="line">    app:selectedItemIsCenteredTV=&quot;true&quot;</span><br><span class="line">    /&gt;</span><br></pre></td></tr></table></figure>
+<p>其中，<code>layoutManagerTV</code>定义布局方式（<code>V7GridLayoutManager</code>、<code>V7LinearLayoutManager</code>、<code>V7StaggeredGridLayoutManager</code>），<code>selectedItemIsCenteredTV</code>设置选中项滑动到屏幕中间，<code>orientation</code>设置水平和垂直（<code>vertical</code>、<code>horizontal</code>）。<code>clipChildren</code>和<code>clipToPadding</code>根据需要添加。</p>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">//@BindView(R.id.rvt_item) RecyclerViewTV rvtItem;</span><br><span class="line">//private ListItemAdapter listItemAdapter;</span><br><span class="line">listItemAdapter = new ListItemAdapter();</span><br><span class="line">rvtItem.setAdapter(listItemAdapter);</span><br><span class="line">rvtItem.setSpacingWithMargins(AutoSizeUtils.pt2px(context, 0),</span><br><span class="line">    AutoSizeUtils.pt2px(context, 20));</span><br><span class="line">rvtItem.setOnItemListener(new RecyclerViewTV.OnItemListener() &#123;</span><br><span class="line">  @Override public void onItemSelected(RecyclerViewTV parent, View itemView, int position) &#123;</span><br><span class="line">    itemView.animate()</span><br><span class="line">        .scaleX(1.05f)</span><br><span class="line">        .scaleY(1.05f)</span><br><span class="line">        .setInterpolator(new BounceInterpolator())</span><br><span class="line">        .setDuration(300)</span><br><span class="line">        .start();</span><br><span class="line">    itemView.setBackgroundResource(R.drawable.bg_item);</span><br><span class="line">  &#125;</span><br><span class="line">  @Override public void onItemPreSelected(RecyclerViewTV parent, View itemView, int position) &#123;</span><br><span class="line">    itemView.animate()</span><br><span class="line">        .scaleX(1.0f)</span><br><span class="line">        .scaleY(1.0f)</span><br><span class="line">        .setInterpolator(new BounceInterpolator())</span><br><span class="line">        .setDuration(300)</span><br><span class="line">        .start();</span><br><span class="line">    itemView.setBackgroundColor(getResources().getColor(android.R.color.transparent));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">listItemAdapter.setNewData(mockData.listItems);</span><br></pre></td></tr></table></figure>
+<p>和leanback实现差不多的功能，adapter也是用的同一个adapter，其中设置间距的方法为<code>setSpacingWithMargins(verticalSpacing,horizontalSpacing)</code>，展示效果和上面leanback的一样。</p>
+<p>RecyclerViewTV的网格布局可以避免部分嵌套。<br>布局文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;com.example.core.view.RecyclerViewTV</span><br><span class="line">      android:id=&quot;@+id/rvt_item&quot;</span><br><span class="line">      android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">      android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">      android:padding=&quot;20pt&quot;</span><br><span class="line">      app:layoutManagerTV=&quot;V7GridLayoutManager&quot;</span><br><span class="line">      app:selectedItemIsCenteredTV=&quot;true&quot;</span><br><span class="line">      /&gt;</span><br></pre></td></tr></table></figure>
+<p>将<code>layoutManagerTV</code>设置为上面提到的<code>V7GridLayoutManager</code>即可。<br>效果：<br><img src="/uploads/androidtv/andridtv_rg_list.gif" alt="img"></p>
+</li>
+</ol>
+<h3 id="列表嵌套"><a href="#列表嵌套" class="headerlink" title="列表嵌套"></a>列表嵌套</h3><ol>
+<li><p>leanback嵌套，这里采用先使用垂直列表，再嵌套水平列表。<br>垂直列表布局：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;</span><br><span class="line">    android:background=&quot;@android:color/black&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;com.example.core.leanback.VerticalGridView</span><br><span class="line">      android:id=&quot;@+id/vgv_item&quot;</span><br><span class="line">      android:layout_width=&quot;match_parent&quot;</span><br><span class="line">      android:layout_height=&quot;match_parent&quot;</span><br><span class="line">      android:clipChildren=&quot;false&quot;</span><br><span class="line">      android:clipToPadding=&quot;false&quot;</span><br><span class="line">      android:padding=&quot;20pt&quot;</span><br><span class="line">      /&gt;</span><br><span class="line">&lt;/RelativeLayout&gt;</span><br></pre></td></tr></table></figure>
+<p>水平列表布局：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:clipChildren=&quot;false&quot;</span><br><span class="line">    android:clipToPadding=&quot;false&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;com.example.core.leanback.HorizontalRowView</span><br><span class="line">      android:id=&quot;@+id/hrv_item&quot;</span><br><span class="line">      android:layout_width=&quot;match_parent&quot;</span><br><span class="line">      android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">      android:clipChildren=&quot;false&quot;</span><br><span class="line">      android:clipToPadding=&quot;false&quot;</span><br><span class="line">      /&gt;</span><br><span class="line">&lt;/FrameLayout&gt;</span><br></pre></td></tr></table></figure>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//@BindView(R.id.vgv_item) VerticalGridView vgvItem;</span><br><span class="line">//private ItemAdapter itemAdapter;</span><br><span class="line">itemAdapter = new ItemAdapter();</span><br><span class="line">vgvItem.setAdapter(itemAdapter);</span><br><span class="line">vgvItem.setVerticalSpacing(AutoSizeUtils.pt2px(context, 20));</span><br><span class="line">itemAdapter.setNewData(mockData.gnLists);</span><br></pre></td></tr></table></figure>
+<p>垂直列表adapter：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class ItemAdapter extends BaseQuickAdapter&lt;GNList, BaseViewHolder&gt; &#123;</span><br><span class="line">  public ItemAdapter() &#123;</span><br><span class="line">    super(R.layout.layout_gn);</span><br><span class="line">  &#125;</span><br><span class="line">  @Override protected void convert(BaseViewHolder helper, GNList item) &#123;</span><br><span class="line">    HorizontalRowView horizontalRowView = helper.getView(R.id.hrv_item);</span><br><span class="line">    ListItemAdapter listItemAdapter = new ListItemAdapter();</span><br><span class="line">    horizontalRowView.getGridView().setAdapter(listItemAdapter);</span><br><span class="line">    horizontalRowView.getGridView().setHorizontalSpacing(AutoSizeUtils.pt2px(context, 20));</span><br><span class="line">    horizontalRowView.getGridView().setOnItemListener(new OnItemListener() &#123;</span><br><span class="line">      @Override public void onItemSelected(Object parent, View itemView, int position) &#123;</span><br><span class="line">        itemView.animate()</span><br><span class="line">            .scaleX(1.05f)</span><br><span class="line">            .scaleY(1.05f)</span><br><span class="line">            .setInterpolator(new BounceInterpolator())</span><br><span class="line">            .setDuration(300)</span><br><span class="line">            .start();</span><br><span class="line">        itemView.setBackgroundResource(R.drawable.bg_item);</span><br><span class="line">      &#125;</span><br><span class="line">      @Override public void onItemPreSelected(Object parent, View itemView, int position) &#123;</span><br><span class="line">        itemView.animate()</span><br><span class="line">            .scaleX(1.0f)</span><br><span class="line">            .scaleY(1.0f)</span><br><span class="line">            .setInterpolator(new BounceInterpolator())</span><br><span class="line">            .setDuration(300)</span><br><span class="line">            .start();</span><br><span class="line">        itemView.setBackgroundColor(getResources().getColor(android.R.color.transparent));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    listItemAdapter.setNewData(mockData.listItems);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>GNList</code>类是一个普通的对象，里面只放了一个<code>String</code>列表。水平列表adapter使用上面提到的同一个adapter。<br>效果：<br><img src="/uploads/androidtv/androidtv_gn_list.gif" alt="img"></p>
+</li>
+<li><p>RecyclerViewTV嵌套，也是先使用垂直列表，再嵌套水平列表。<br>垂直列表布局：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;</span><br><span class="line">    android:background=&quot;@android:color/black&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;com.example.core.view.RecyclerViewTV</span><br><span class="line">      android:id=&quot;@+id/rvt_item&quot;</span><br><span class="line">      android:layout_width=&quot;match_parent&quot;</span><br><span class="line">      android:layout_height=&quot;match_parent&quot;</span><br><span class="line">      android:orientation=&quot;vertical&quot;</span><br><span class="line">      android:padding=&quot;20pt&quot;</span><br><span class="line">      app:layoutManagerTV=&quot;V7LinearLayoutManager&quot;</span><br><span class="line">      app:selectedItemIsCenteredTV=&quot;true&quot;</span><br><span class="line">      /&gt;</span><br><span class="line">&lt;/RelativeLayout&gt;</span><br></pre></td></tr></table></figure>
+<p>水平列表布局：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:clipChildren=&quot;false&quot;</span><br><span class="line">    android:clipToPadding=&quot;false&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;com.example.core.view.RecyclerViewTV</span><br><span class="line">      android:id=&quot;@+id/rvt_h_item&quot;</span><br><span class="line">      android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">      android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">      android:orientation=&quot;horizontal&quot;</span><br><span class="line">      app:layoutManagerTV=&quot;V7LinearLayoutManager&quot;</span><br><span class="line">      app:selectedItemIsCenteredTV=&quot;true&quot;</span><br><span class="line">      /&gt;</span><br><span class="line">&lt;/FrameLayout&gt;</span><br></pre></td></tr></table></figure>
+<p>代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//@BindView(R.id.rvt_item) RecyclerViewTV rvtItem;</span><br><span class="line">//private ItemAdapter itemAdapter;</span><br><span class="line">itemAdapter = new ItemAdapter();</span><br><span class="line">rvtItem.setAdapter(itemAdapter);</span><br><span class="line">rvtItem.setSpacingWithMargins(AutoSizeUtils.pt2px(context, 20),</span><br><span class="line">    AutoSizeUtils.pt2px(context, 0));</span><br><span class="line">itemAdapter.setNewData(mockData.rnLists);</span><br></pre></td></tr></table></figure>
+<p>垂直列表adapter：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">public class ItemAdapter extends BaseQuickAdapter&lt;RNList, BaseViewHolder&gt; &#123;</span><br><span class="line">    public ItemAdapter() &#123;</span><br><span class="line">      super(R.layout.layout_rn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override protected void convert(BaseViewHolder helper, RNList item) &#123;</span><br><span class="line">      RecyclerViewTV rvthItem = helper.getView(R.id.rvt_h_item);</span><br><span class="line">      ListItemAdapter listItemAdapter = new ListItemAdapter();</span><br><span class="line">      rvthItem.setAdapter(listItemAdapter);</span><br><span class="line">      rvthItem.setSpacingWithMargins(AutoSizeUtils.pt2px(context, 0),</span><br><span class="line">          AutoSizeUtils.pt2px(context, 20));</span><br><span class="line">      rvthItem.setOnItemListener(new RecyclerViewTV.OnItemListener() &#123;</span><br><span class="line">        @Override public void onItemSelected(RecyclerViewTV parent, View itemView, int position) &#123;</span><br><span class="line">          itemView.animate()</span><br><span class="line">              .scaleX(1.05f)</span><br><span class="line">              .scaleY(1.05f)</span><br><span class="line">              .setInterpolator(new BounceInterpolator())</span><br><span class="line">              .setDuration(300)</span><br><span class="line">              .start();</span><br><span class="line">          itemView.setBackgroundResource(R.drawable.bg_item);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void onItemPreSelected(RecyclerViewTV parent, View itemView, int position) &#123;</span><br><span class="line">          itemView.animate()</span><br><span class="line">              .scaleX(1.0f)</span><br><span class="line">              .scaleY(1.0f)</span><br><span class="line">              .setInterpolator(new BounceInterpolator())</span><br><span class="line">              .setDuration(300)</span><br><span class="line">              .start();</span><br><span class="line">          itemView.setBackgroundColor(getResources().getColor(android.R.color.transparent));</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">      listItemAdapter.setNewData(mockData.listItems);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p><code>RNList</code>类和<code>GNList</code>一样，里面只放了一个<code>String</code>列表。<br>效果和leanback嵌套的效果一样。</p>
+</li>
+</ol>
+<h3 id="同一个列表不相同的item"><a href="#同一个列表不相同的item" class="headerlink" title="同一个列表不相同的item"></a>同一个列表不相同的item</h3><p>  在一个列表中，item展示的内容可能是不一样的，这里使用RecyclerViewTV演示，leanback使用方法差不多。<br>  列表布局：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;</span><br><span class="line">    android:background=&quot;@android:color/black&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;com.example.core.view.RecyclerViewTV</span><br><span class="line">      android:id=&quot;@+id/rvt_item&quot;</span><br><span class="line">      android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">      android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">      android:layout_gravity=&quot;center_horizontal&quot;</span><br><span class="line">      android:padding=&quot;20pt&quot;</span><br><span class="line">      android:orientation=&quot;vertical&quot;</span><br><span class="line">      app:layoutManagerTV=&quot;V7GridLayoutManager&quot;</span><br><span class="line">      app:selectedItemIsCenteredTV=&quot;true&quot;</span><br><span class="line">      /&gt;</span><br><span class="line">&lt;/FrameLayout&gt;</span><br></pre></td></tr></table></figure></p>
+<p>  item1(150pt x 150pt，中间文字)布局：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:focusable=&quot;true&quot;</span><br><span class="line">    android:focusableInTouchMode=&quot;true&quot;</span><br><span class="line">    android:padding=&quot;2pt&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;FrameLayout</span><br><span class="line">      android:id=&quot;@+id/fl_content&quot;</span><br><span class="line">      android:layout_width=&quot;150pt&quot;</span><br><span class="line">      android:layout_height=&quot;150pt&quot;</span><br><span class="line">      android:background=&quot;@color/colorPrimary&quot;</span><br><span class="line">      &gt;</span><br><span class="line">    &lt;TextView</span><br><span class="line">        android:id=&quot;@+id/tv_text&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_gravity=&quot;center&quot;</span><br><span class="line">        android:text=&quot;text&quot;</span><br><span class="line">        android:textColor=&quot;@android:color/white&quot;</span><br><span class="line">        android:textSize=&quot;25pt&quot;</span><br><span class="line">        /&gt;</span><br><span class="line">  &lt;/FrameLayout&gt;</span><br><span class="line">&lt;/RelativeLayout&gt;</span><br></pre></td></tr></table></figure></p>
+<p>  item2(320pt x 150pt，中间图片和文字)布局：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:focusable=&quot;true&quot;</span><br><span class="line">    android:focusableInTouchMode=&quot;true&quot;</span><br><span class="line">    android:padding=&quot;2pt&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;FrameLayout</span><br><span class="line">      android:id=&quot;@+id/fl_content&quot;</span><br><span class="line">      android:layout_width=&quot;324pt&quot;</span><br><span class="line">      android:layout_height=&quot;150pt&quot;</span><br><span class="line">      android:background=&quot;@color/colorPrimary&quot;</span><br><span class="line">      &gt;</span><br><span class="line">    &lt;ImageView</span><br><span class="line">        android:layout_width=&quot;50pt&quot;</span><br><span class="line">        android:layout_height=&quot;50pt&quot;</span><br><span class="line">        android:layout_gravity=&quot;center_vertical&quot;</span><br><span class="line">        android:layout_marginLeft=&quot;30pt&quot;</span><br><span class="line">        android:src=&quot;@mipmap/ic_launcher&quot;</span><br><span class="line">        /&gt;</span><br><span class="line">    &lt;TextView</span><br><span class="line">        android:id=&quot;@+id/tv_text&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_gravity=&quot;center_vertical|right&quot;</span><br><span class="line">        android:layout_marginRight=&quot;30pt&quot;</span><br><span class="line">        android:text=&quot;text&quot;</span><br><span class="line">        android:textColor=&quot;@android:color/holo_green_light&quot;</span><br><span class="line">        android:textSize=&quot;25pt&quot;</span><br><span class="line">        /&gt;</span><br><span class="line">  &lt;/FrameLayout&gt;</span><br><span class="line">&lt;/RelativeLayout&gt;</span><br></pre></td></tr></table></figure></p>
+<p>  item3(150pt x 150pt，中间图片)布局：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:focusable=&quot;true&quot;</span><br><span class="line">    android:focusableInTouchMode=&quot;true&quot;</span><br><span class="line">    android:padding=&quot;2pt&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;FrameLayout</span><br><span class="line">      android:id=&quot;@+id/fl_content&quot;</span><br><span class="line">      android:layout_width=&quot;150pt&quot;</span><br><span class="line">      android:layout_height=&quot;150pt&quot;</span><br><span class="line">      android:background=&quot;@color/colorPrimary&quot;</span><br><span class="line">      &gt;</span><br><span class="line">    &lt;ImageView</span><br><span class="line">        android:id=&quot;@+id/iv_img&quot;</span><br><span class="line">        android:layout_width=&quot;50pt&quot;</span><br><span class="line">        android:layout_height=&quot;50pt&quot;</span><br><span class="line">        android:layout_gravity=&quot;center&quot;</span><br><span class="line">        android:src=&quot;@drawable/ic_launcher&quot;</span><br><span class="line">        /&gt;</span><br><span class="line">  &lt;/FrameLayout&gt;</span><br><span class="line">&lt;/RelativeLayout&gt;</span><br></pre></td></tr></table></figure></p>
+<p>  代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">//@BindView(R.id.rvt_item) RecyclerViewTV rvtItem;</span><br><span class="line">//private ItemAdapter itemAdapter;</span><br><span class="line">itemAdapter = new ItemAdapter();</span><br><span class="line">itemAdapter.setSpanSizeLookup(new BaseQuickAdapter.SpanSizeLookup() &#123;</span><br><span class="line">  @Override public int getSpanSize(GridLayoutManager gridLayoutManager, int position) &#123;</span><br><span class="line">    return RS_TYPE_LONG == mockData.rsModels.get(position).getItemType() ? 2 : 1;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">rvtItem.setSpacingWithMargins(AutoSizeUtils.pt2px(context, 20),</span><br><span class="line">    AutoSizeUtils.pt2px(context, 20));</span><br><span class="line">rvtItem.setLayoutManager(new V7GridLayoutManager(context, 3));</span><br><span class="line">rvtItem.setAdapter(itemAdapter);</span><br><span class="line">rvtItem.setOnItemListener(new RecyclerViewTV.OnItemListener() &#123;</span><br><span class="line">  @Override public void onItemSelected(RecyclerViewTV parent, View itemView, int position) &#123;</span><br><span class="line">    itemView.animate()</span><br><span class="line">        .scaleX(1.05f)</span><br><span class="line">        .scaleY(1.05f)</span><br><span class="line">        .setInterpolator(new BounceInterpolator())</span><br><span class="line">        .setDuration(300)</span><br><span class="line">        .start();</span><br><span class="line">    itemView.setBackgroundResource(R.drawable.bg_item);</span><br><span class="line">  &#125;</span><br><span class="line">  @Override public void onItemPreSelected(RecyclerViewTV parent, View itemView, int position) &#123;</span><br><span class="line">    itemView.animate()</span><br><span class="line">        .scaleX(1.0f)</span><br><span class="line">        .scaleY(1.0f)</span><br><span class="line">        .setInterpolator(new BounceInterpolator())</span><br><span class="line">        .setDuration(300)</span><br><span class="line">        .start();</span><br><span class="line">    itemView.setBackgroundColor(getResources().getColor(android.R.color.transparent));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">itemAdapter.setNewData(mockData.rsModels);</span><br><span class="line">itemAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() &#123;</span><br><span class="line">  @Override public void onItemClick(BaseQuickAdapter adapter, View view, int position) &#123;</span><br><span class="line">    toastor.showToast(&quot;click&quot; + position);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>  注：<strong><code>RecyclerViewTV</code>的<code>setAdapter</code>方法要放在<code>setLayoutManager</code>方法后面，否则<code>Adapter</code>的<code>setSpanSizeLookup</code>方法不会执行。</strong><br>  效果：<br>  <img src="/uploads/androidtv/androidtv_rs_list.gif" alt="img"></p>
+<h3 id="暗焦点"><a href="#暗焦点" class="headerlink" title="暗焦点"></a>暗焦点</h3><p>暗焦点也是一个经常需要用到的功能，比如下面就是一个左边菜单右边内容的布局，需要暗焦点提示使用者菜单的当前选中项。先放效果图：<br><img src="/uploads/androidtv/androidtv_o.gif" alt="img"><br>外框架activity布局：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;</span><br><span class="line">    android:background=&quot;@android:color/black&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;com.example.core.view.RecyclerViewTV</span><br><span class="line">      android:id=&quot;@+id/rvt_menu&quot;</span><br><span class="line">      android:layout_width=&quot;200pt&quot;</span><br><span class="line">      android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">      android:layout_centerVertical=&quot;true&quot;</span><br><span class="line">      android:orientation=&quot;vertical&quot;</span><br><span class="line">      app:layoutManagerTV=&quot;V7LinearLayoutManager&quot;</span><br><span class="line">      app:selectedItemIsCenteredTV=&quot;true&quot;</span><br><span class="line">      /&gt;</span><br><span class="line">  &lt;com.example.core.view.VerticalViewPager</span><br><span class="line">      android:id=&quot;@+id/vvp_content&quot;</span><br><span class="line">      android:layout_width=&quot;match_parent&quot;</span><br><span class="line">      android:layout_height=&quot;match_parent&quot;</span><br><span class="line">      android:layout_toRightOf=&quot;@id/rvt_menu&quot;</span><br><span class="line">      /&gt;</span><br><span class="line">&lt;/RelativeLayout&gt;</span><br></pre></td></tr></table></figure></p>
+<p>fragment布局：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;</span><br><span class="line">    &gt;</span><br><span class="line">  &lt;com.example.core.view.RecyclerViewTV</span><br><span class="line">      android:id=&quot;@+id/rvt_item&quot;</span><br><span class="line">      android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">      android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">      android:padding=&quot;20pt&quot;</span><br><span class="line">      app:layoutManagerTV=&quot;V7GridLayoutManager&quot;</span><br><span class="line">      app:selectedItemIsCenteredTV=&quot;true&quot;</span><br><span class="line">      /&gt;</span><br><span class="line">&lt;/RelativeLayout&gt;</span><br></pre></td></tr></table></figure></p>
+<p>外框架activity主要代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">//@BindView(R.id.rvt_menu) RecyclerViewTV rvtMenu;</span><br><span class="line">//@BindView(R.id.vvp_content) VerticalViewPager vvpContent;</span><br><span class="line">//@BindColor(android.R.color.transparent) int transparent;</span><br><span class="line">//@BindColor(R.color.colorPrimary) int darkerGray;</span><br><span class="line">//@BindColor(android.R.color.tertiary_text_light) int textLight;</span><br><span class="line">//private MenuAdapter menuAdapter;</span><br><span class="line">//private boolean isRight = false;</span><br><span class="line">//private ViewPagerAdapter pagerAdapter;</span><br><span class="line">menuAdapter = new MenuAdapter();</span><br><span class="line">rvtMenu.setSpacingWithMargins(AutoSizeUtils.pt2px(context, 20),</span><br><span class="line">    AutoSizeUtils.pt2px(context, 0));</span><br><span class="line">rvtMenu.setAdapter(menuAdapter);</span><br><span class="line">rvtMenu.setOnItemListener(new RecyclerViewTV.OnItemListener() &#123;</span><br><span class="line">  @Override public void onItemSelected(RecyclerViewTV parent, View itemView, int position) &#123;</span><br><span class="line">    if (position != vvpContent.getCurrentItem()) &#123;</span><br><span class="line">      vvpContent.setCurrentItem(position);</span><br><span class="line">    &#125;</span><br><span class="line">    itemView.setBackgroundColor(darkerGray);</span><br><span class="line">  &#125;</span><br><span class="line">  @Override public void onItemPreSelected(RecyclerViewTV parent, View itemView, int position) &#123;</span><br><span class="line">    itemView.setBackgroundColor(isRight ? textLight : transparent);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line">rvtMenu.setOnChildViewHolderSelectedListener(</span><br><span class="line">    new RecyclerViewTV.OnChildViewHolderSelectedListener() &#123;</span><br><span class="line">      @Override</span><br><span class="line">      public void onChildViewHolderSelected(RecyclerViewTV parent, RecyclerView.ViewHolder vh,</span><br><span class="line">          int position) &#123;</span><br><span class="line">        vh.itemView.setOnKeyListener(new View.OnKeyListener() &#123;</span><br><span class="line">          @Override public boolean onKey(View view, int i, KeyEvent keyEvent) &#123;</span><br><span class="line">            if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) &#123;</span><br><span class="line">              isRight = i == KeyEvent.KEYCODE_DPAD_RIGHT;</span><br><span class="line">            &#125;</span><br><span class="line">            return false;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">menuAdapter.setNewData(mockData.outMenu);</span><br><span class="line">for (int i = 0; i &lt; mockData.outMenu.size(); i++) &#123;</span><br><span class="line">  BaseFragment fragment = new ConentFragment();</span><br><span class="line">  Bundle bundle = new Bundle();</span><br><span class="line">  bundle.putInt(&quot;menuIndex&quot;, i);</span><br><span class="line">  fragment.setArguments(bundle);</span><br><span class="line">  fragments.add(fragment);</span><br><span class="line">&#125;</span><br><span class="line">pagerAdapter = new ViewPagerAdapter(fragmentManager, fragments);</span><br><span class="line">vvpContent.setAdapter(pagerAdapter);</span><br><span class="line">setViewPagerSpeed(vvpContent, 300);//设置viewpager切换的速度</span><br></pre></td></tr></table></figure></p>
+<p>  <code>MenuAdapter</code>上面例子已经有很多不再重复放了。这里是通过一个布尔值<code>isRight</code>和<code>setOnChildViewHolderSelectedListener</code>方法记录操作状态实现暗焦点的，<code>setOnChildViewHolderSelectedListener</code>是一个列表子项的监听事件。还可以通过<code>View</code>的<code>activated</code>值来记录暗焦点，比如列表选中的最后一项的子视图设置为<code>activated</code>,在子视图监听事件<code>setOnItemListener</code>中通过<code>itemView.isActivated()</code>判断是否为暗焦点。本项目使用的RecyclerViewTV专门针对暗焦点做了处理就是通过<code>activated</code>实现的，通过<code>isMenu(true)</code>打开即可进行暗焦点的设置和判断操作。</p>
+<p>外框架activity需要注意的方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@Override public void onAttachedToWindow() &#123;</span><br><span class="line">  super.onAttachedToWindow();</span><br><span class="line">  rvtMenu.setSelection(0);</span><br><span class="line">&#125;</span><br><span class="line">protected void setViewPagerSpeed(VerticalViewPager viewPager, int mDuration) &#123;</span><br><span class="line">  try &#123;</span><br><span class="line">    Field field = VerticalViewPager.class.getDeclaredField(&quot;mScroller&quot;);</span><br><span class="line">    field.setAccessible(true);</span><br><span class="line">    FixedSpeedScroller scroller =</span><br><span class="line">        new FixedSpeedScroller(viewPager.getContext(), new AccelerateInterpolator());</span><br><span class="line">    field.set(viewPager, scroller);</span><br><span class="line">    scroller.setmDuration(mDuration);</span><br><span class="line">  &#125; catch (Exception e) &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>  因为fragment里面的数据可能会后渲染，在刚进入这个界面的时候焦点会在fragment上面，所以需要再<code>onAttachedToWindow</code>方法中让焦点进入界面渲染完成后回到菜单上，这里不用<code>requestFocus()</code>而使用<code>setSelection()</code>是因为<code>setSelection()</code>里面已经包含了<code>requestFocus()</code>方法并且它能选择列表具体哪一个子项获得焦点。<br>  <code>setViewPagerSpeed</code>是一个设置viewpager页面切换速度的方法。</p>
+<p>fragment代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">//@BindView(R.id.rvt_item) RecyclerViewTV rvtItem;</span><br><span class="line">//private ListItemAdapter listItemAdapter;</span><br><span class="line">Bundle bundle = getArguments();</span><br><span class="line">    if (bundle != null) &#123;</span><br><span class="line">      int menuIndex = bundle.getInt(&quot;menuIndex&quot;);//获取activity传过来的数据</span><br><span class="line">    &#125;</span><br><span class="line">    listItemAdapter = new ListItemAdapter();</span><br><span class="line">    rvtItem.setAdapter(listItemAdapter);</span><br><span class="line">    rvtItem.setSpacingWithMargins(AutoSizeUtils.pt2px(mContext, 20),</span><br><span class="line">        AutoSizeUtils.pt2px(mContext, 20));</span><br><span class="line">    rvtItem.setLayoutManager(new V7GridLayoutManager(mContext, 4));</span><br><span class="line">    rvtItem.setOnItemListener(new RecyclerViewTV.OnItemListener() &#123;</span><br><span class="line">      @Override public void onItemSelected(RecyclerViewTV parent, View itemView, int position) &#123;</span><br><span class="line">        itemView.animate()</span><br><span class="line">            .scaleX(1.05f)</span><br><span class="line">            .scaleY(1.05f)</span><br><span class="line">            .setInterpolator(new BounceInterpolator())</span><br><span class="line">            .setDuration(300)</span><br><span class="line">            .start();</span><br><span class="line">        itemView.setBackgroundResource(R.drawable.bg_item);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      @Override public void onItemPreSelected(RecyclerViewTV parent, View itemView, int position) &#123;</span><br><span class="line">        itemView.animate()</span><br><span class="line">            .scaleX(1.0f)</span><br><span class="line">            .scaleY(1.0f)</span><br><span class="line">            .setInterpolator(new BounceInterpolator())</span><br><span class="line">            .setDuration(300)</span><br><span class="line">            .start();</span><br><span class="line">        itemView.setBackgroundColor(getResources().getColor(android.R.color.transparent));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>  fragment没什么需要注意的东西，和之前的<code>RecyclerViewTV</code>网格列表一样的代码。</p>
+<h3 id="遥控器按键"><a href="#遥控器按键" class="headerlink" title="遥控器按键"></a>遥控器按键</h3><p>遥控器按键主要有方向键(上、下、左、右)、确定、返回、播放（暂停）、数字等。<br>activity中可以通过<code>onKeyDown</code>和<code>dispatchKeyEvent</code>方法进行监听操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Override public boolean onKeyDown(int keyCode, KeyEvent event) &#123;</span><br><span class="line">  //TODO operating</span><br><span class="line">  return super.onKeyDown(keyCode, event);</span><br><span class="line">&#125;</span><br><span class="line">@Override public boolean dispatchKeyEvent(KeyEvent event) &#123;</span><br><span class="line">  //TODO operating</span><br><span class="line">  return super.dispatchKeyEvent(event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>返回事件也可以通过<code>onBackPressed</code>方法监听操作。</p>
+<p>view可以通过<code>setOnKeyListener</code>方法进行监听操作：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">view.setOnKeyListener(new View.OnKeyListener() &#123;</span><br><span class="line">  @Override public boolean onKey(View view, int keyCode, KeyEvent keyEvent) &#123;</span><br><span class="line">    //TODO operating</span><br><span class="line">    return false;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>按键监听的返回值为true时，则表示不执行按键操作，可自定义操作。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">键值</th>
+<th style="text-align:center">事件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_DPAD_UP</td>
+<td style="text-align:center">上</td>
+</tr>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_DPAD_DOWN</td>
+<td style="text-align:center">下</td>
+</tr>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_DPAD_LEFT</td>
+<td style="text-align:center">左</td>
+</tr>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_DPAD_RIGHT</td>
+<td style="text-align:center">右</td>
+</tr>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_DPAD_CENTER</td>
+<td style="text-align:center">确定</td>
+</tr>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_MEDIA_PAUSE</td>
+<td style="text-align:center">视频播放、暂停</td>
+</tr>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_1</td>
+<td style="text-align:center">0~9，10个数字</td>
+</tr>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_BACK</td>
+<td style="text-align:center">返回键</td>
+</tr>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_HOME</td>
+<td style="text-align:center">主页</td>
+</tr>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_A</td>
+<td style="text-align:center">A~Z，26个字母</td>
+</tr>
+<tr>
+<td style="text-align:left">KeyEvent.KEYCODE_MENU</td>
+<td style="text-align:center">菜单</td>
+</tr>
+<tr>
+<td style="text-align:left">…</td>
+<td style="text-align:center">…</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>  附：<a href="https://github.com/blackchy/AndroidTV" target="_blank" rel="noopener">项目地址</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AndroidTV/" rel="tag"># AndroidTV</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/11/2018-12-11-RxBus/" rel="next" title="RxBus的使用">
+                <i class="fa fa-chevron-left"></i> RxBus的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.png" alt="Black Chy">
+            
+              <p class="site-author-name" itemprop="name">Black Chy</p>
+              <p class="site-description motion-element" itemprop="description">Just a dog.</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/BlackChy" title="GitHub &rarr; https://github.com/BlackChy" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                  
+                    
+                  
+                  <a href="mailto:haiyu.chen@foxmail.com" title="E-Mail &rarr; mailto:haiyu.chen@foxmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i></a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#准备"><span class="nav-number">1.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#适配"><span class="nav-number">2.</span> <span class="nav-text">适配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列表"><span class="nav-number">3.</span> <span class="nav-text">列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列表嵌套"><span class="nav-number">4.</span> <span class="nav-text">列表嵌套</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同一个列表不相同的item"><span class="nav-number">5.</span> <span class="nav-text">同一个列表不相同的item</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#暗焦点"><span class="nav-number">6.</span> <span class="nav-text">暗焦点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遥控器按键"><span class="nav-number">7.</span> <span class="nav-text">遥控器按键</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 – <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Black Chy</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a></div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+  
+  <script src="/lib/pangu/dist/pangu.min.js?v=3.3"></script>
+  <script type="text/javascript">pangu.spacingPage();</script>
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=6.6.0"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=6.6.0"></script>
+
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+
+  
+
+</body>
+</html>
