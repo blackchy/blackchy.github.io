@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title><![CDATA[Hexo Next 修改超链接颜色]]></title>
-    <url>%2F2019%2F09%2F29%2F2019-09-30-Hexo-Next-Link-Color%2F</url>
+    <url>%2F2019%2F09%2F30%2F2019-09-30-Hexo-Next-Link-Color%2F</url>
     <content type="text"><![CDATA[Hexo Next自带的超链接颜色为灰色加下划线，看起来不是特别明显，所以将其修改为蓝色。 1.在./themes/next/source/css/_custom/custom.styl里添加如下代码。 12345678910if hexo-config(&quot;custom_css.post_body_a.enable&quot;) .post-body a:not(.btn)&#123; color: convert(hexo-config(&quot;custom_css.post_body_a.normal_color&quot;)); border-bottom: none; &amp;:hover &#123; color: convert(hexo-config(&quot;custom_css.post_body_a.hover_color&quot;)); text-decoration: underline; &#125; &#125; a:not(.btn)避免修改首页的”阅读全文”按钮 2.在./themes/next/_config.yml里添加如下代码。 12345custom_css: post_body_a: enable: true normal_color: &quot;#3296FA&quot; hover_color: &quot;#0593d3&quot;]]></content>
       <categories>
         <category>misc</category>
