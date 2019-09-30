@@ -1939,7 +1939,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #66fffe;
+  background: #007529;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3223,4 +3223,12 @@ ul.breadcrumb li+li:last-child {
   .pagination {
     margin: 8px 0 0;
   }
+}
+.post-body a:not(.btn) {
+  color: #3296fa;
+  border-bottom: none;
+}
+.post-body a:not(.btn):hover {
+  color: #0593d3;
+  text-decoration: underline;
 }
