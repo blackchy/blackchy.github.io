@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[我的Flutter入门学习]]></title>
+    <url>%2F2019%2F11%2F12%2F2019-11-12-Flutter-Start%2F</url>
+    <content type="text"><![CDATA[刚开始因为工作中并没有用到Flutter，所以对Flutter不太感冒，加之之前React Native带给我的很多不好的开发体验，因此Flutter火了很久都还没有去接触它。但是，看到越来越多的人去用Flutter，还有最近一段时间又比较有空闲，就去开始学习Flutter，最后发现它挺好用的，比React Native要友好很多。打开Flutter中文网，开始学习Flutter。 开发环境(windows)前置要求 操作系统：Windows7及以上(64位) 磁盘空间:400MB 工具:git for windows IDE:AndroidStudio3.0及以上(下载安装Flutter和Dart插件) Flutter SDK由于墙的原因，Flutter官网下载sdk不方便，所以到github下载。项目路径：Flutter SDK Github Repository 下载最新发布的zip压缩包，解压到自定义文件夹中(如：E:/FlutterSdk/)。 然后打开cmd或powershell输入命令flutter doctor检查看看有什么错误，我这里报了一些错误：一些android licenses没有认证，没有安装AndroidStudio、没有Flutter插件、没有Dart插件、没有连接设备，Flutter和Dart插件在AndroidStudio中已经安装所以不用管，其他几个报错明显也不用管。 最后复制flutter\bin的全路径准备配置环境变量(如：E:\FlutterSdk\flutter-1.10.15\bin)。 配置环境变量添加用户变量： 新增变量 变量名：PUB_HOSTED_URL 值：https://pub.flutter-io.cn 新增变量 变量命：FLUTTER_STORAGE_BASE_URL 值：https://storage.flutter-io.cn 找到path变量，在后面添加Flutter SDK的变量，值：flutter\bin的全路径(如：E:\FlutterSdk\flutter-1.10.15\bin，记得前面加;隔开) 开发新建项目 选择File&gt;New Flutter Project。 选择Flutter application作为项目类型。 输入项目名称。 在lib/main.dart文件中开始写代码。 其他事项 模拟器安装后因为cpu类型可能导致安装后无法使用，需要在android模块修改gradle配置。 修改app图标、app名称等，其操作和android开发一样，在android模块AndroidManifest进行修改。 添加依赖包是在根目录pubspec.yaml中添加，然后点击文件上方Packages get进行下载构建。 使用项目文件夹里的图片需要在pubspec.yaml资源assets处加上该文件名称路径，跟android注册activity类似。 修改了dart文件过后点击run图标旁边的闪电图标(或ctrl+s保存)即可进行热重载，直接刷新连接设备的界面。…… 其他就是Flutter UI、组件、框架等的熟悉使用。]]></content>
+      <categories>
+        <category>flutter</category>
+      </categories>
+      <tags>
+        <tag>android</tag>
+        <tag>flutter</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Hexo Next 修改超链接颜色]]></title>
     <url>%2F2019%2F09%2F30%2F2019-09-30-Hexo-Next-Link-Color%2F</url>
     <content type="text"><![CDATA[Hexo Next自带的超链接颜色为灰色加下划线，看起来不是特别明显，所以将其修改为蓝色。 1.在./themes/next/source/css/_custom/custom.styl里添加如下代码。 12345678910if hexo-config(&quot;custom_css.post_body_a.enable&quot;) .post-body a:not(.btn)&#123; color: convert(hexo-config(&quot;custom_css.post_body_a.normal_color&quot;)); border-bottom: none; &amp;:hover &#123; color: convert(hexo-config(&quot;custom_css.post_body_a.hover_color&quot;)); text-decoration: underline; &#125; &#125; a:not(.btn)避免修改首页的”阅读全文”按钮 2.在./themes/next/_config.yml里添加如下代码。 12345custom_css: post_body_a: enable: true normal_color: &quot;#3296FA&quot; hover_color: &quot;#0593d3&quot;]]></content>
